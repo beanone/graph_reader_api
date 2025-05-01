@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi_mcp import FastApiMCP
 from graph_reader.config import GraphReaderConfig
 from graph_reader.reader import GraphReader
 
@@ -16,6 +17,14 @@ def create_app(base_dir: str = "graph_output") -> FastAPI:
         FastAPI: The configured FastAPI application.
     """
     app = FastAPI()
+    mcp = FastApiMCP(
+        app,
+        name="Graph Reader API",
+        description="A FastAPI-based API for graph data retrieval and analysis.",
+        describe_all_responses=True,
+        describe_full_response_schema=True,
+    )
+    mcp.mount()
 
     config = APIConfig(base_dir=base_dir)
     reader = GraphReader(
