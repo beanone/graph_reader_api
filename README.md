@@ -33,15 +33,16 @@ First, ensure you have graph data in the `graph_output` directory. The Docker se
 
 ```
 graph_output/
-├── communities/
-│   ├── team_alpha.json
-│   └── team_beta.json
+├── adjacency/
+│   └── adjacency.jsonl
 ├── entities/
-│   ├── 1.json
-│   ├── 2.json
-│   └── 3.json
-└── index/
-    └── properties.json
+│   └── shard_0.jsonl
+├── logs/
+│   ├── entity_updates.jsonl
+│   └── relation_updates.jsonl
+├── relations/
+│   └── shard_0.jsonl
+└── index.db
 ```
 
 You can generate test data using the fixture generator:
