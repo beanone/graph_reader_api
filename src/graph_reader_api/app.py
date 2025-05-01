@@ -16,8 +16,14 @@ def create_app(base_dir: str = "graph_output") -> FastAPI:
     Returns:
         FastAPI: The configured FastAPI application.
     """
-    app = FastAPI()
+    # Initialize FastAPI app with OpenAPI metadata
+    app = FastAPI(
+        title="Graph Reader API",
+        description="A FastAPI-based API for graph data retrieval and analysis.",
+        version="0.1.0",
+    )
 
+    # Initialize graph reader
     config = APIConfig(base_dir=base_dir)
     reader = GraphReader(
         GraphReaderConfig(

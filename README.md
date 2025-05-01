@@ -25,6 +25,7 @@ Now includes community exploration.
 - Search entities by properties
 - Retrieve community an entity belongs to
 - List all members of a community
+- MCP (Model Context Protocol) support for AI integration
 
 ## Quick Start (Docker Compose)
 
@@ -41,3 +42,31 @@ Access the API at: http://localhost:8000
 - `GET /entity/{entity_id}/community`
 - `GET /community/{community_id}/members`
 - `GET /search?key=name&value=Alice`
+
+## Testing MCP Integration
+
+To verify that the MCP server is working correctly, you can use the MCP Inspector tool:
+
+1. Start the API server:
+   ```bash
+   docker-compose up --build
+   ```
+
+2. Install and run the MCP Inspector:
+   ```bash
+   npx @modelcontextprotocol/inspector node build/index.js
+   ```
+
+3. In the MCP Inspector:
+   - Pick the Transport Type "SSE"
+   - Connect to the MCP server at `http://localhost:8000/mcp`
+   - Navigate to the `Tools` section
+   - Click `List Tools` to see all available endpoints
+   - Test an endpoint by:
+     - Selecting a tool from the list
+     - Filling in any required parameters
+     - Clicking `Run Tool` to execute
+
+4. Check the server logs for any debugging information if needed
+
+This will help confirm that your MCP server is properly configured and all endpoints are accessible as MCP tools.
