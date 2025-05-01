@@ -69,6 +69,32 @@ Access the API at: http://localhost:8000
 - `GET /community/{community_id}/members`
 - `GET /search?key=name&value=Alice`
 
+## Testing with Postman
+
+A Postman collection is provided to help you test the API endpoints. To use it:
+
+1. Install [Postman](https://www.postman.com/downloads/)
+
+2. Import the collection:
+   - Open Postman
+   - Click "Import" button
+   - Select the collection file: `tests/postman/graph_reader_api.postman_collection.json`
+
+3. The collection includes requests for all available endpoints:
+   - Entity operations
+   - Community operations
+   - Search operations
+
+4. Make sure the API is running locally before testing:
+   ```bash
+   docker-compose up --build
+   ```
+
+5. Use the collection to test endpoints:
+   - All requests are pre-configured to use `http://localhost:8000` as the base URL
+   - Example data is included in the requests
+   - Variables and test scripts are included to validate responses
+
 ## Testing MCP Integration
 
 To verify that the MCP server is working correctly, you can use the MCP Inspector tool:
