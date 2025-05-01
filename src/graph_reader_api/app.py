@@ -17,14 +17,6 @@ def create_app(base_dir: str = "graph_output") -> FastAPI:
         FastAPI: The configured FastAPI application.
     """
     app = FastAPI()
-    mcp = FastApiMCP(
-        app,
-        name="Graph Reader API",
-        description="A FastAPI-based API for graph data retrieval and analysis.",
-        describe_all_responses=True,
-        describe_full_response_schema=True,
-    )
-    mcp.mount()
 
     config = APIConfig(base_dir=base_dir)
     reader = GraphReader(
@@ -38,6 +30,15 @@ def create_app(base_dir: str = "graph_output") -> FastAPI:
     app.include_router(entity.init_router(reader))
     app.include_router(community.init_router(reader))
     app.include_router(search.init_router(reader))
+
+    mcp = FastApiMCP(
+        app,
+        name="Graph Reader API",
+        description="A FastAPI-based API for graph data retrieval and analysis.",
+        describe_all_responses=True,
+        describe_full_response_schema=True,
+    )
+    mcp.mount()
 
     return app
 
