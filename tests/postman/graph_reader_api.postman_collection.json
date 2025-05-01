@@ -1,0 +1,265 @@
+{
+    "info": {
+        "name": "Graph Reader API",
+        "description": "API tests for graph reader operations",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "1. Entity Operations",
+            "item": [
+                {
+                    "name": "Get Entity",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response has correct entity data', function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('entity_id');",
+                                    "    pm.expect(jsonData).to.have.property('properties');",
+                                    "    pm.expect(jsonData.properties).to.have.property('name');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/entity/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "entity",
+                                "1"
+                            ]
+                        },
+                        "description": "Get entity by ID"
+                    }
+                },
+                {
+                    "name": "Get Entity Not Found",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status code is 404', function () {",
+                                    "    pm.response.to.have.status(404);",
+                                    "});",
+                                    "",
+                                    "pm.test('Error message is correct', function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.detail).to.equal('Entity not found');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/entity/999",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "entity",
+                                "999"
+                            ]
+                        },
+                        "description": "Get non-existent entity"
+                    }
+                },
+                {
+                    "name": "Get Entity Neighbors",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response has neighbors array', function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('neighbors');",
+                                    "    pm.expect(jsonData.neighbors).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/entity/1/neighbors",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "entity",
+                                "1",
+                                "neighbors"
+                            ]
+                        },
+                        "description": "Get entity neighbors"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "2. Community Operations",
+            "item": [
+                {
+                    "name": "Get Community Members",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response has members array', function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('members');",
+                                    "    pm.expect(jsonData.members).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/community/team_alpha/members",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "community",
+                                "team_alpha",
+                                "members"
+                            ]
+                        },
+                        "description": "Get community members"
+                    }
+                },
+                {
+                    "name": "Get Entity Community",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response has community_id', function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('community_id');",
+                                    "    pm.expect(jsonData.community_id).to.equal('team_alpha');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/entity/1/community",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "entity",
+                                "1",
+                                "community"
+                            ]
+                        },
+                        "description": "Get entity's community"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "3. Search Operations",
+            "item": [
+                {
+                    "name": "Search by Property",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response has entity_ids array', function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('entity_ids');",
+                                    "    pm.expect(jsonData.entity_ids).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/search?key=name&value=Alice",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "search"
+                            ],
+                            "query": [
+                                {
+                                    "key": "key",
+                                    "value": "name"
+                                },
+                                {
+                                    "key": "value",
+                                    "value": "Alice"
+                                }
+                            ]
+                        },
+                        "description": "Search entities by property"
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000",
+            "type": "string"
+        }
+    ]
+}
