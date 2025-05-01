@@ -1,5 +1,3 @@
-import os
-
 from fastapi import FastAPI
 from graph_reader.config import GraphReaderConfig
 from graph_reader.reader import GraphReader

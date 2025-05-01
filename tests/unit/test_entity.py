@@ -1,8 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
-from graph_reader_api.app import create_app
 
-from tests.conftest import setup_graph_fixture
+from graph_reader_api.app import create_app
 
 
 @pytest.fixture(scope="module")
