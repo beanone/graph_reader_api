@@ -29,6 +29,31 @@ Now includes community exploration.
 
 ## Quick Start (Docker Compose)
 
+First, ensure you have graph data in the `graph_output` directory. The Docker setup expects this directory structure:
+
+```
+graph_output/
+├── communities/
+│   ├── team_alpha.json
+│   └── team_beta.json
+├── entities/
+│   ├── 1.json
+│   ├── 2.json
+│   └── 3.json
+└── index/
+    └── properties.json
+```
+
+You can generate test data using the fixture generator:
+
+```python
+# Generate test data in the graph_output directory
+from tests.fixture_generator import create_test_graph_fixture
+create_test_graph_fixture("graph_output")
+```
+
+Then start the service:
+
 ```bash
 docker-compose up --build
 ```
