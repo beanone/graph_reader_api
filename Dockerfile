@@ -7,6 +7,9 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
+# Upgrade pip and setuptools to secure versions
+RUN pip install --no-cache-dir -U pip setuptools>=70.0.0
+
 # Copy project files
 COPY pyproject.toml ./
 COPY src ./src
