@@ -1,0 +1,2 @@
+{"relation_id": 101, "source_id": 1, "target_id": 2, "properties": {"type": "FRIENDS_WITH"}, "update_time": "2025-04-28T12:10:00Z"}
+{"relation_id": 102, "source_id": 2, "target_id": 3, "properties": {"type": "COWORKERS_WITH"}, "update_time": "2025-04-28T12:12:00Z"}

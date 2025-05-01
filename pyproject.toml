@@ -1,0 +1,50 @@
+[project]
+name = "graph_reader_api"
+version = "0.1.0"
+description = "REST API wrapper for beanone_graph library"
+authors = [
+    { name = "Beanone Team", email = "beanone@example.com" }
+]
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "pydantic>=2.4.2",
+    "beanone_graph>=0.1.0",
+    "python-dotenv>=1.0.0",
+    "pytest-asyncio>=0.23.0"
+]
+requires-python = ">=3.10"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/graph_reader_api"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+select = ["E", "F", "I", "N", "W", "B", "UP", "PL", "RUF"]
+ignore = []
+
+[tool.ruff.isort]
+known-first-party = ["graph_reader_api"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = """
+    -v
+    --cov=src/graph_reader_api
+    --cov-report=term-missing
+    --cov-report=html
+    --cov-config=.coveragerc
+"""
+pythonpath = ["."]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+    "unit: marks tests as unit tests (deselect with '-m \"not unit\"')",
+    "transaction: marks tests that verify transaction management"
+]
+asyncio_mode = "strict"

@@ -1,0 +1,5 @@
+{"entity_id": 1, "properties": {"name": "Alice", "type": "Person"}, "update_time": "2025-04-28T12:00:00Z"}
+{"entity_id": 1, "properties": {"email": "alice@example.com"}, "update_time": "2025-04-28T12:05:00Z"}
+{"entity_id": 2, "properties": {"name": "Bob", "type": "Person"}, "update_time": "2025-04-28T12:01:00Z"}
+{"entity_id": 2, "properties": {"name": "Bobby"}, "update_time": "2025-04-28T12:06:00Z"}
+{"entity_id": 3, "properties": {"name": "Charlie", "type": "Person", "community_id": "team_beta"}, "update_time": "2025-04-28T12:02:00Z"}

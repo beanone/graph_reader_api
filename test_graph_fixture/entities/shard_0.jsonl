@@ -1,0 +1,4 @@
+{"entity_id": 0, "properties": {"name": "Bill", "type": "Person", "email": "bill@example.com"}, "last_update_time": "2025-04-28T11:05:00Z"}
+{"entity_id": 1, "properties": {"name": "Alice", "type": "Person", "email": "alice@example.com", "community_id": "team_alpha"}, "last_update_time": "2025-04-28T12:05:00Z"}
+{"entity_id": 2, "properties": {"name": "Bobby", "type": "Person", "community_id": "team_alpha"}, "last_update_time": "2025-04-28T12:06:00Z"}
+{"entity_id": 3, "properties": {"name": "Charlie", "type": "Person", "community_id": "team_beta"}, "last_update_time": "2025-04-28T12:02:00Z"}

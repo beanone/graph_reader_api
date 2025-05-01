@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  graph_reader_api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./graph_output:/app/graph_output
+    environment:
+      - PYTHONUNBUFFERED=1
