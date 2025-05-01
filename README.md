@@ -1,6 +1,17 @@
-# Graph Reader API with Community Support
+<p align="center">
+  <img src="https://raw.githubusercontent.com/beanone/graph_reader_api/refs/heads/main/docs/assets/logos/banner.svg" alt="Graph Context Banner" width="100%">
+</p>
 
-This project wraps the graph_reader library with a FastAPI service, adding community retrieval functionality.
+This project wraps the graph_reader_api library with a FastAPI service, adding community retrieval functionality.
+
+This library enables fast graph traversal and lookup from file-based storage with sharded and indexed structure.
+Now includes community exploration.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/beanone/graph_reader_api/blob/main/LICENSE)
+[![Tests](https://github.com/beanone/graph_reader_api/actions/workflows/tests.yml/badge.svg)](https://github.com/beanone/graph_reader_api/actions?query=workflow%3Atests)
+[![Coverage](https://codecov.io/gh/beanone/graph_reader_api/branch/main/graph/badge.svg)](https://codecov.io/gh/beanone/graph_reader_api)
+[![Code Quality](https://img.shields.io/badge/code%20style-ruff-000000)](https://github.com/astral-sh/ruff)
+
 
 ## Features
 
