@@ -1,5 +1,3 @@
-# Graph Reader API
-
 <p align="center">
   <img src="https://raw.githubusercontent.com/beanone/graph_reader_api/refs/heads/main/docs/assets/logos/banner.svg" alt="Graph Context Banner" width="100%">
 </p>

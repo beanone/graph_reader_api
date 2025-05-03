@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi_mcp import FastApiMCP
 from graph_reader.config import GraphReaderConfig
 from graph_reader.reader import GraphReader
@@ -17,10 +18,19 @@ def create_app(base_dir: str = "graph_output") -> FastAPI:
         FastAPI: The configured FastAPI application.
     """
     # Initialize FastAPI app with OpenAPI metadata
-    app = FastAPI(
+    application = FastAPI(
         title="Graph Reader API",
         description="A FastAPI-based API for graph data retrieval and analysis.",
         version="0.1.0",
+    )
+
+    # Add CORS middleware
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:3000", "http://localhost:8001"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     # Initialize graph reader
@@ -33,12 +43,12 @@ def create_app(base_dir: str = "graph_output") -> FastAPI:
         )
     )
 
-    app.include_router(entity.init_router(reader))
-    app.include_router(community.init_router(reader))
-    app.include_router(search.init_router(reader))
+    application.include_router(entity.init_router(reader))
+    application.include_router(community.init_router(reader))
+    application.include_router(search.init_router(reader))
 
     mcp = FastApiMCP(
-        app,
+        application,
         name="Graph Reader API",
         description="A FastAPI-based API for graph data retrieval and analysis.",
         describe_all_responses=True,
@@ -46,7 +56,7 @@ def create_app(base_dir: str = "graph_output") -> FastAPI:
     )
     mcp.mount()
 
-    return app
+    return application
 
 
-app = create_app()
+application = create_app()
