@@ -11,8 +11,6 @@ Now includes community exploration.
 [![Tests](https://github.com/beanone/graph_reader_api/actions/workflows/tests.yml/badge.svg)](https://github.com/beanone/graph_reader_api/actions?query=workflow%3Atests)
 [![Coverage](https://codecov.io/gh/beanone/graph_reader_api/branch/main/graph/badge.svg)](https://codecov.io/gh/beanone/graph_reader_api)
 [![Code Quality](https://img.shields.io/badge/code%20style-ruff-000000)](https://github.com/astral-sh/ruff)
-[![Docker Pulls](https://img.shields.io/docker/pulls/hongyanworkshop123/graph-reader-api)](https://hub.docker.com/r/hongyanworkshop123/graph-reader-api)
-[![Docker Image Size](https://img.shields.io/docker/image-size/hongyanworkshop123/graph-reader-api/latest)](https://hub.docker.com/r/hongyanworkshop123/graph-reader-api)
 [![Security Scan](https://github.com/beanone/graph_reader_api/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/beanone/graph_reader_api/actions/workflows/docker-publish.yml)
 
 
