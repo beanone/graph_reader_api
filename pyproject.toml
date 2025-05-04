@@ -28,7 +28,7 @@ packages = ["src/graph_reader_api"]
 line-length = 88
 target-version = "py312"
 select = ["E", "F", "I", "N", "W", "B", "UP", "PL", "RUF"]
-ignore = ["PLR2004"]
+ignore = ["PLR2004", "B008"]
 
 [tool.ruff.isort]
 known-first-party = ["graph_reader_api"]
@@ -43,10 +43,13 @@ addopts = """
     --cov-report=html
     --cov-config=.coveragerc
 """
-pythonpath = ["."]
+pythonpath = ["src"]
 markers = [
     "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
     "unit: marks tests as unit tests (deselect with '-m \"not unit\"')",
     "transaction: marks tests that verify transaction management"
 ]
 asyncio_default_fixture_loop_scope = "function"
+
+[tool.mypy]
+explicit_package_bases = true

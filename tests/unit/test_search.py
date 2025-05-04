@@ -6,12 +6,12 @@ from graph_reader_api.app import create_app
 
 @pytest.fixture(scope="module")
 def client(setup_graph_fixture):
-    app = create_app(base_dir=str(setup_graph_fixture))
-    return TestClient(app)
+    application = create_app(base_dir=str(setup_graph_fixture))
+    return TestClient(application)
 
 
-def test_search_by_property(client):
-    response = client.get("/search?key=name&value=Alice")
+def test_search_by_property(client, auth_header):
+    response = client.get("/search?key=name&value=Alice", headers=auth_header)
     assert response.status_code == 200
     data = response.json()
     assert "entity_ids" in data
