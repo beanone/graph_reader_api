@@ -54,7 +54,7 @@ def jwt_token():
     """Generate a valid JWT for test authentication."""
     secret = os.getenv("KEYLIN_JWT_SECRET", "changeme")
     payload = {
-        "sub": "test-user-id",
+        "sub": "123e4567-e89b-12d3-a456-426614174000",  # valid UUID
         "email": "test@example.com",
         "roles": ["admin"],
         # Add any other claims your app expects

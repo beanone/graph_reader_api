@@ -64,8 +64,11 @@ Access the API at: http://localhost:8000
 - `GET /entity/{entity_id}`
 - `GET /entity/{entity_id}/neighbors`
 - `GET /entity/{entity_id}/community`
+- `GET /entity/users/me`[^users-me-note]
 - `GET /community/{community_id}/members`
 - `GET /search?key=name&value=Alice`
+
+[^users-me-note]: Returns the authenticated user's identity and claims as extracted from the JWT. This endpoint is intended to provide user context for graph-related operations. It does not provide user profile management, but only exposes the current user's identity as it relates to the graph domain.
 
 ## Testing with Postman
 

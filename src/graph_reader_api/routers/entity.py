@@ -28,6 +28,9 @@ def init_router(reader: GraphReader) -> APIRouter:
 
     @router.get("/users/me", response_model=UserRead)
     async def get_current_user_info(user=Depends(get_current_user)):
-        return UserRead(**user)
+        return UserRead(
+            id=user.get("sub"),
+            email=user.get("email"),
+        )
 
     return router
