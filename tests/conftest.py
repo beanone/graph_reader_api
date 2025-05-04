@@ -1,13 +1,13 @@
 """Pytest configuration file."""
 
-import os
 import subprocess
 import sys
 from pathlib import Path
+from uuid import UUID
 
 import pytest
 from fixture_generator import create_test_graph_fixture
-from jose import jwt
+from keylin.jwt_utils import create_jwt_for_user
 
 from graph_reader_api.app import application
 from graph_reader_api.auth.dependencies import get_current_user
@@ -50,19 +50,8 @@ application.dependency_overrides[get_current_user] = override_get_current_user
 
 
 @pytest.fixture
-def jwt_token():
-    """Generate a valid JWT for test authentication."""
-    secret = os.getenv("KEYLIN_JWT_SECRET", "changeme")
-    payload = {
-        "sub": "123e4567-e89b-12d3-a456-426614174000",  # valid UUID
-        "email": "test@example.com",
-        "roles": ["admin"],
-        # Add any other claims your app expects
-    }
-    return jwt.encode(payload, secret, algorithm="HS256")
-
-
-@pytest.fixture
-def auth_header(jwt_token):
+def auth_header():
     """Return an Authorization header with a valid JWT."""
-    return {"Authorization": f"Bearer {jwt_token}"}
+    user_id = UUID("123e4567-e89b-12d3-a456-426614174000")
+    jwt = create_jwt_for_user(user_id, "test@example.com")
+    return {"Authorization": f"Bearer {jwt}"}
