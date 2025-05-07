@@ -8,7 +8,7 @@ from .config import APIConfig
 from .routers import community, entity, search
 
 
-def create_app(base_dir: str = "graph_output") -> FastAPI:
+def create_app(base_dir: str = "resources/kg") -> FastAPI:
     """Create and configure the FastAPI application.
 
     Args:

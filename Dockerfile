@@ -12,13 +12,14 @@ RUN pip install --no-cache-dir -U pip setuptools>=70.0.0
 
 # Copy project files
 COPY pyproject.toml ./
-COPY src ./src
+COPY src /app
+COPY requirements.txt ./
 
 # Install dependencies and the package
-RUN pip install beanone_graph && \
-    pip install -e .
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
 # Set Python path
 ENV PYTHONPATH=/app
 
-CMD ["uvicorn", "graph_reader_api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "graph_reader_api.app:application", "--host", "0.0.0.0", "--port", "8000"]

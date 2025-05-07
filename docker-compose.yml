@@ -5,7 +5,9 @@ services:
     build: .
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     volumes:
-      - ./graph_output:/app/graph_output
+      - ./resources/kg:/app/resources/kg
     environment:
       - PYTHONUNBUFFERED=1

@@ -25,10 +25,10 @@ Now includes community exploration.
 
 ## Quick Start (Docker Compose)
 
-First, ensure you have graph data in the `graph_output` directory. The Docker setup expects this directory structure:
+First, ensure you have graph data in the `resources/kg` directory. The Docker setup expects this directory structure:
 
 ```
-graph_output/
+resources/kg/
 ├── adjacency/
 │   └── adjacency.jsonl
 ├── entities/
@@ -44,9 +44,9 @@ graph_output/
 You can generate test data using the fixture generator:
 
 ```python
-# Generate test data in the graph_output directory
+# Generate test data in the resources/kg directory
 from tests.fixture_generator import create_test_graph_fixture
-create_test_graph_fixture("graph_output")
+create_test_graph_fixture("resources/kg")
 ```
 
 Then start the service:
