@@ -8,7 +8,7 @@ from .config import APIConfig
 from .routers import community, entity, search
 
 
-def create_app(base_dir: str = "graph_output") -> FastAPI:
+def create_app(base_dir: str = "resources/kg") -> FastAPI:
     """Create and configure the FastAPI application.
 
     Args:
@@ -32,6 +32,11 @@ def create_app(base_dir: str = "graph_output") -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    @application.get("/health")
+    async def health_check():
+        """Health check endpoint for Docker."""
+        return {"status": "healthy"}
 
     # Initialize graph reader
     config = APIConfig(base_dir=base_dir)

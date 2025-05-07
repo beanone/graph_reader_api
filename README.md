@@ -1,3 +1,5 @@
+# Graph Reader API
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/beanone/graph_reader_api/refs/heads/main/docs/assets/logos/banner.svg" alt="Graph Context Banner" width="100%">
 </p>
@@ -13,6 +15,51 @@ Now includes community exploration.
 [![Code Quality](https://img.shields.io/badge/code%20style-ruff-000000)](https://github.com/astral-sh/ruff)
 [![Security Scan](https://github.com/beanone/graph_reader_api/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/beanone/graph_reader_api/actions/workflows/docker-publish.yml)
 
+## Table of Contents
+
+- [Architecture](#architecture)
+- [Features](#features)
+- [Quick Start (Docker Compose)](#quick-start-docker-compose)
+- [Endpoints](#endpoints)
+- [Docker Configuration](#docker-configuration)
+  - [Health Checks](#health-checks)
+  - [Resource Limits](#resource-limits)
+  - [Security](#security)
+  - [Volume Mounting](#volume-mounting)
+- [Testing with Postman](#testing-with-postman)
+- [Testing MCP Integration](#testing-mcp-integration)
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph "Client Applications"
+        Client[Client App]
+    end
+
+    subgraph "Authentication"
+        Locksmitha[Locksmitha<br/>Login Service]
+    end
+
+    subgraph "Graph Reader API"
+        API[Graph Reader API<br/>FastAPI Service]
+        KG[(Knowledge Graph<br/>File Storage)]
+        MCP[MCP Server]
+    end
+
+    Client -->|Login| Locksmitha
+    Locksmitha -->|JWT Token| Client
+    Client -->|API Requests + JWT| API
+    API -->|Validate Token| Locksmitha
+    API -->|Read/Write| KG
+    API -->|Expose Tools| MCP
+    MCP -->|Tool Execution| API
+
+    style API fill:#f9f,stroke:#333,stroke-width:4px
+    style Locksmitha fill:#bbf,stroke:#333,stroke-width:2px
+    style KG fill:#bfb,stroke:#333,stroke-width:2px
+    style MCP fill:#fbb,stroke:#333,stroke-width:2px
+```
 
 ## Features
 
@@ -22,13 +69,15 @@ Now includes community exploration.
 - Retrieve community an entity belongs to
 - List all members of a community
 - MCP (Model Context Protocol) support for AI integration
+- Health check endpoint for container monitoring
+- Resource limits for stable performance
 
 ## Quick Start (Docker Compose)
 
-First, ensure you have graph data in the `graph_output` directory. The Docker setup expects this directory structure:
+First, ensure you have graph data in the `resources/kg` directory. The Docker setup expects this directory structure:
 
 ```
-graph_output/
+resources/kg/
 ├── adjacency/
 │   └── adjacency.jsonl
 ├── entities/
@@ -44,9 +93,9 @@ graph_output/
 You can generate test data using the fixture generator:
 
 ```python
-# Generate test data in the graph_output directory
+# Generate test data in the resources/kg directory
 from tests.fixture_generator import create_test_graph_fixture
-create_test_graph_fixture("graph_output")
+create_test_graph_fixture("resources/kg")
 ```
 
 Then start the service:
@@ -55,10 +104,17 @@ Then start the service:
 docker-compose up --build
 ```
 
+The service includes:
+- Health check endpoint at `/health`
+- Resource limits (1 CPU, 1GB memory)
+- Automatic restart on failure
+- Volume mounting for knowledge graph data
+
 Access the API at: http://localhost:8000
 
 ## Endpoints
 
+- `GET /health` - Health check endpoint for container monitoring
 - `GET /entity/{entity_id}`
 - `GET /entity/{entity_id}/neighbors`
 - `GET /entity/{entity_id}/community`
@@ -67,6 +123,29 @@ Access the API at: http://localhost:8000
 - `GET /search?key=name&value=Alice`
 
 [^users-me-note]: Returns the authenticated user's identity and claims as extracted from the JWT. This endpoint is intended to provide user context for graph-related operations. It does not provide user profile management, but only exposes the current user's identity as it relates to the graph domain.
+
+## Docker Configuration
+
+The service is configured with the following Docker features:
+
+### Health Checks
+- Endpoint: `/health`
+- Interval: 30 seconds
+- Timeout: 10 seconds
+- Retries: 3
+- Start period: 40 seconds
+
+### Resource Limits
+- CPU: 1 core
+- Memory: 1GB
+
+### Security
+- Non-root user for application
+- No Python bytecode generation
+- Clean dependency installation
+
+### Volume Mounting
+- Knowledge graph data mounted at `/app/resources/kg`
 
 ## Testing with Postman
 
@@ -83,6 +162,7 @@ A Postman collection is provided to help you test the API endpoints. To use it:
    - Entity operations
    - Community operations
    - Search operations
+   - Health check
 
 4. Make sure the API is running locally before testing:
    ```bash
@@ -111,6 +191,10 @@ To verify that the MCP server is working correctly, you can use the MCP Inspecto
 3. In the MCP Inspector:
    - Pick the Transport Type "SSE"
    - Connect to the MCP server at `http://localhost:8000/mcp`
+   - Login using the login server and get the JWT token
+   - Open Authentication section:
+     - Set Header Name to "Authorization"
+     - Set Header Value to "your_jwt_token" (exclude the word "Bearer" as the tool adds it automatically)
    - Navigate to the `Tools` section
    - Click `List Tools` to see all available endpoints
    - Test an endpoint by:

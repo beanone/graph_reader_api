@@ -33,7 +33,7 @@ jobs:
 
       - name: Run tests
         env:
-          KEYLIN_JWT_SECRET: "test-secret-key-for-github-actions"
+          JWT_SECRET: "test-secret-key-for-github-actions"
           LOCKSMITHA_URL: "http://localhost:8001"
         run: |
           pytest tests/ -v --cov=src/graph_reader_api --cov-branch --cov-report=xml
