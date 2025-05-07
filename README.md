@@ -32,18 +32,18 @@ Now includes community exploration.
 ## Architecture
 
 ```mermaid
-graph TB
+graph TD
     subgraph "Client Applications"
         Client[Client App]
     end
 
     subgraph "Authentication"
-        Locksmitha[Locksmitha<br/>Login Service]
+        Locksmitha[Locksmitha\nLogin Service]
     end
 
     subgraph "Graph Reader API"
-        API[Graph Reader API<br/>FastAPI Service]
-        KG[(Knowledge Graph<br/>File Storage)]
+        API[Graph Reader API\nFastAPI Service]
+        KG[(Knowledge Graph\nFile Storage)]
         MCP[MCP Server]
     end
 
@@ -55,10 +55,14 @@ graph TB
     API -->|Expose Tools| MCP
     MCP -->|Tool Execution| API
 
-    style API fill:#f9f,stroke:#333,stroke-width:4px
-    style Locksmitha fill:#bbf,stroke:#333,stroke-width:2px
-    style KG fill:#bfb,stroke:#333,stroke-width:2px
-    style MCP fill:#fbb,stroke:#333,stroke-width:2px
+    classDef primary fill:#E6D5AC,stroke:#D4B483,stroke-width:2px,color:#000
+    classDef secondary fill:#D4E6AC,stroke:#B4D483,stroke-width:2px,color:#000
+    classDef storage fill:#ACD4E6,stroke:#83B4D4,stroke-width:2px,color:#000
+
+    class API primary
+    class MCP secondary
+    class Locksmitha secondary
+    class KG storage
 ```
 
 ## Features
