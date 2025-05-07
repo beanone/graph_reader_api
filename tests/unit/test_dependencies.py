@@ -20,7 +20,7 @@ async def test_get_current_user_valid(monkeypatch):
         "email": "test@example.com",
     }
 
-    def fake_decode(token, secret, algorithms):
+    def fake_decode(token, secret, algorithms, **kwargs):
         assert token == "validtoken"
         return payload
 
@@ -31,7 +31,7 @@ async def test_get_current_user_valid(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_get_current_user_invalid_token(monkeypatch):
-    def fake_decode(token, secret, algorithms):
+    def fake_decode(token, secret, algorithms, **kwargs):
         raise JWTError("bad token")
 
     monkeypatch.setattr(jwt, "decode", fake_decode)
@@ -45,7 +45,7 @@ async def test_get_current_user_invalid_token(monkeypatch):
 async def test_get_current_user_missing_sub(monkeypatch):
     payload = {"email": "test@example.com"}
 
-    def fake_decode(token, secret, algorithms):
+    def fake_decode(token, secret, algorithms, **kwargs):
         return payload
 
     monkeypatch.setattr(jwt, "decode", fake_decode)

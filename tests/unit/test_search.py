@@ -18,3 +18,10 @@ def test_search_by_property(client, auth_header):
     assert isinstance(response.json().get("entity_ids"), list)
     assert len(response.json().get("entity_ids")) == 1
     assert response.json().get("entity_ids")[0] == 1
+
+
+def test_health_endpoint(client):
+    response = client.get("/health")
+    assert response.status_code == 200
+    data = response.json()
+    assert data == {"status": "healthy"}
