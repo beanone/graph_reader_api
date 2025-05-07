@@ -65,6 +65,18 @@ graph TD
 
 > **Note:** The knowledge graph (KG) storage is read-only to the Graph Reader API and MCP tool services. These services provide retrieval and analysis capabilities, but do not modify the underlying graph data. Graph building and updates are managed by a separate beanone component outside this service.
 
+## About Analysis Capabilities
+
+The current API enables users to:
+- Retrieve entities and their properties by ID
+- Explore the direct neighbors (relations) of any entity
+- Search for entities by arbitrary property key/value
+- Discover the community membership of entities and list all members of a community
+
+At present, the API does **not** provide advanced graph analytics such as centrality measures, shortest path calculations, clustering coefficients, or statistical summaries. The focus is on efficient graph traversal, lookup, and community exploration.
+
+**Advanced graph analysis features are planned for future versions of this API.**
+
 ## Features
 
 - Retrieve entity by ID
