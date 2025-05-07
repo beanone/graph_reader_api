@@ -6,6 +6,68 @@
     },
     "item": [
         {
+            "name": "0. Authentication",
+            "item": [
+                {
+                    "name": "0. Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "username",
+                                    "value": "testuser@example.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "testpassword123",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{login_url}}/auth/jwt/login",
+                            "host": [
+                                "{{login_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "jwt",
+                                "login"
+                            ]
+                        },
+                        "description": "Obtain JWT access token from Locksmitha login service"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test('Response has access token', function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('access_token');",
+                                    "    pm.globals.set('access_token', jsonData.access_token)",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "1. Entity Operations",
             "item": [
                 {
@@ -32,7 +94,12 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/entity/1",
                             "host": [
@@ -68,7 +135,12 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/entity/999",
                             "host": [
@@ -105,7 +177,12 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/entity/1/neighbors",
                             "host": [
@@ -148,7 +225,12 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/community/team_alpha/members",
                             "host": [
@@ -186,7 +268,12 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/entity/1/community",
                             "host": [
@@ -229,7 +316,12 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/search?key=name&value=Alice",
                             "host": [
@@ -259,6 +351,11 @@
         {
             "key": "base_url",
             "value": "http://localhost:8000",
+            "type": "string"
+        },
+        {
+            "key": "login_url",
+            "value": "http://localhost:8001",
             "type": "string"
         }
     ]

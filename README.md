@@ -4,10 +4,7 @@
   <img src="https://raw.githubusercontent.com/beanone/graph_reader_api/refs/heads/main/docs/assets/logos/banner.svg" alt="Graph Context Banner" width="100%">
 </p>
 
-This project wraps the graph_reader_api library with a FastAPI service, adding community retrieval functionality.
-
-This library enables fast graph traversal and lookup from file-based storage with sharded and indexed structure.
-Now includes community exploration.
+This project is the core implementation of the Graph Reader API: a FastAPI-based service for knowledge graph (KG) retrieval and analysis. It provides both REST endpoints and Model Context Protocol (MCP) tool integration for efficient graph traversal, lookup, and community exploration from file-based storage with sharded and indexed structure.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/beanone/graph_reader_api/blob/main/LICENSE)
 [![Tests](https://github.com/beanone/graph_reader_api/actions/workflows/tests.yml/badge.svg)](https://github.com/beanone/graph_reader_api/actions?query=workflow%3Atests)
@@ -19,6 +16,7 @@ Now includes community exploration.
 
 - [Architecture](#architecture)
 - [Features](#features)
+- [Authentication](#authentication)
 - [Quick Start (Docker Compose)](#quick-start-docker-compose)
 - [Endpoints](#endpoints)
 - [Docker Configuration](#docker-configuration)
@@ -65,6 +63,8 @@ graph TD
     class KG storage
 ```
 
+> **Note:** The knowledge graph (KG) storage is read-only to the Graph Reader API and MCP tool services. These services provide retrieval and analysis capabilities, but do not modify the underlying graph data. Graph building and updates are managed by a separate beanone component outside this service.
+
 ## Features
 
 - Retrieve entity by ID
@@ -72,9 +72,26 @@ graph TD
 - Search entities by properties
 - Retrieve community an entity belongs to
 - List all members of a community
-- MCP (Model Context Protocol) support for AI integration
+- Expose all endpoints as MCP tools for AI/automation integration
 - Health check endpoint for container monitoring
 - Resource limits for stable performance
+
+## Authentication
+
+All API endpoints (except `/health`) require authentication using a JSON Web Token (JWT) issued by the Locksmitha login service. You must obtain a valid JWT before making requests to the API or using MCP tools.
+
+**How to obtain a JWT:**
+1. Send a login request to Locksmitha (default: `http://localhost:8001/auth/jwt/login`) with your credentials.
+2. The response will include a JWT token.
+
+**How to use the JWT:**
+- For REST API requests, include the token in the `Authorization` header:
+  ```
+  Authorization: Bearer <your_jwt_token>
+  ```
+- For MCP tool requests (e.g., via MCP Inspector), set the `Authorization` header in the tool's authentication section.
+
+If you do not provide a valid JWT, all endpoints (except `/health`) will return a 401 Unauthorized error.
 
 ## Quick Start (Docker Compose)
 
@@ -118,7 +135,9 @@ Access the API at: http://localhost:8000
 
 ## Endpoints
 
-- `GET /health` - Health check endpoint for container monitoring
+> **Note:** All endpoints (except `/health`) require a valid JWT in the `Authorization` header.
+
+- `GET /health` - Health check endpoint for container monitoring (no authentication required)
 - `GET /entity/{entity_id}`
 - `GET /entity/{entity_id}/neighbors`
 - `GET /entity/{entity_id}/community`
@@ -153,7 +172,7 @@ The service is configured with the following Docker features:
 
 ## Testing with Postman
 
-A Postman collection is provided to help you test the API endpoints. To use it:
+A Postman collection is provided to help you test the API endpoints. **You must log in to Locksmitha and obtain a JWT before making any requests (except `/health`).**
 
 1. Install [Postman](https://www.postman.com/downloads/)
 
@@ -163,17 +182,22 @@ A Postman collection is provided to help you test the API endpoints. To use it:
    - Select the collection file: `tests/postman/graph_reader_api.postman_collection.json`
 
 3. The collection includes requests for all available endpoints:
+   - Login
    - Entity operations
    - Community operations
    - Search operations
    - Health check
 
-4. Make sure the API is running locally before testing:
+4. Obtain a JWT from Locksmitha:
+   - Send a POST request to `http://localhost:8001/auth/jwt/login` with your credentials.
+   - The `access_token` value will be automatically extracted from the response and setup into a global variable.
+
+5. Make sure the API is running locally before testing:
    ```bash
    docker-compose up --build
    ```
 
-5. Use the collection to test endpoints:
+6. Use the collection to test endpoints:
    - All requests are pre-configured to use `http://localhost:8000` as the base URL
    - Example data is included in the requests
    - Variables and test scripts are included to validate responses
