@@ -38,12 +38,12 @@ graph TD
     end
 
     subgraph "Authentication"
-        Locksmitha[Locksmitha\nLogin Service]
+        Locksmitha[Locksmitha Login Service]
     end
 
     subgraph "Graph Reader API"
-        API[Graph Reader API\nFastAPI Service]
-        KG[(Knowledge Graph\nFile Storage)]
+        API[Graph Reader API - FastAPI Service]
+        KG[(Knowledge Graph File Storage)]
         MCP[MCP Server]
     end
 
