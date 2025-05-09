@@ -5,7 +5,7 @@ from graph_reader.config import GraphReaderConfig
 from graph_reader.reader import GraphReader
 
 from .config import APIConfig
-from .routers import community, entity, search
+from .routers import apikey, community, entity, search
 
 
 def create_app(base_dir: str = "resources/kg") -> FastAPI:
@@ -51,6 +51,7 @@ def create_app(base_dir: str = "resources/kg") -> FastAPI:
     application.include_router(entity.init_router(reader))
     application.include_router(community.init_router(reader))
     application.include_router(search.init_router(reader))
+    application.include_router(apikey.router)
 
     mcp = FastApiMCP(
         application,
