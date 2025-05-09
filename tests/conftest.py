@@ -7,7 +7,7 @@ from uuid import UUID
 
 import pytest
 from fixture_generator import create_test_graph_fixture
-from keylin.jwt_utils import create_jwt_for_user
+from keylin.keylin_utils import create_jwt_for_user
 
 from graph_reader_api.app import application
 from graph_reader_api.auth.dependencies import get_current_user
