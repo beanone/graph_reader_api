@@ -44,7 +44,7 @@
                                 "login"
                             ]
                         },
-                        "description": "Obtain JWT access token from Locksmitha login service"
+                        "description": "Obtain JWT access token from login service"
                     },
                     "event": [
                         {
