@@ -10,11 +10,15 @@ dependencies = [
     "fastapi_mcp>=0.1.0",
     "uvicorn>=0.24.0",
     "pydantic>=2.4.2",
+    "pydantic-settings>=2.0.0",
     "beanone_graph>=0.1.0",
     "python-dotenv>=1.0.0",
     "pytest-asyncio>=0.23.0",
     "setuptools>=70.0.0",
-    "python-jose[cryptography]>=3.3.0"
+    "python-jose[cryptography]>=3.3.0",
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.12.0",
+    "beanone-apikey>=0.1.0"
 ]
 requires-python = ">=3.10"
 
@@ -51,6 +55,10 @@ markers = [
     "transaction: marks tests that verify transaction management"
 ]
 asyncio_default_fixture_loop_scope = "function"
+filterwarnings = [
+    "ignore::pydantic.PydanticDeprecatedSince20",
+    "ignore::pydantic.PydanticDeprecatedSince211"
+]
 
 [tool.mypy]
 explicit_package_bases = true
