@@ -1,7 +1,6 @@
+from apikey.dependencies import get_current_user
 from fastapi import APIRouter, Depends, Query
 from graph_reader.reader import GraphReader
-
-from ..auth.dependencies import get_current_user
 
 
 def init_router(reader: GraphReader) -> APIRouter:

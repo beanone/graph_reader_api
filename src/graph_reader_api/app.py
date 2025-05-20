@@ -1,3 +1,7 @@
+from contextlib import asynccontextmanager
+
+from apikey.db import init_db
+from apikey.router import api_key_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_mcp import FastApiMCP
@@ -5,7 +9,20 @@ from graph_reader.config import GraphReaderConfig
 from graph_reader.reader import GraphReader
 
 from .config import APIConfig
-from .routers import apikey, community, entity, search
+from .routers import community, entity, search
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan context manager for FastAPI app.
+
+    This handles startup and shutdown events.
+    """
+    # Startup
+    await init_db()
+    yield
+    # Shutdown
+    # Add any cleanup code here if needed
 
 
 def create_app(base_dir: str = "resources/kg") -> FastAPI:
@@ -22,6 +39,7 @@ def create_app(base_dir: str = "resources/kg") -> FastAPI:
         title="Graph Reader API",
         description="A FastAPI-based API for graph data retrieval and analysis.",
         version="0.1.0",
+        lifespan=lifespan,
     )
 
     # Add CORS middleware
@@ -51,7 +69,6 @@ def create_app(base_dir: str = "resources/kg") -> FastAPI:
     application.include_router(entity.init_router(reader))
     application.include_router(community.init_router(reader))
     application.include_router(search.init_router(reader))
-    application.include_router(apikey.router)
 
     mcp = FastApiMCP(
         application,
@@ -61,6 +78,8 @@ def create_app(base_dir: str = "resources/kg") -> FastAPI:
         describe_full_response_schema=True,
     )
     mcp.mount()
+    # We do not want to mount the API key router to the MCP.
+    application.include_router(api_key_router)
 
     return application
 

@@ -1,8 +1,6 @@
+from apikey.dependencies import get_current_user
 from fastapi import APIRouter, Depends, HTTPException
 from graph_reader.reader import GraphReader
-from keylin.schemas import UserRead
-
-from ..auth.dependencies import get_current_user
 
 
 def init_router(reader: GraphReader) -> APIRouter:
@@ -25,12 +23,5 @@ def init_router(reader: GraphReader) -> APIRouter:
         if not community_id:
             raise HTTPException(status_code=404, detail="Community not found")
         return {"community_id": community_id}
-
-    @router.get("/users/me", response_model=UserRead)
-    async def get_current_user_info(user=Depends(get_current_user)):
-        return UserRead(
-            id=user.get("sub"),
-            email=user.get("email"),
-        )
 
     return router

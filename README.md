@@ -17,6 +17,7 @@ This project is the core implementation of the Graph Reader API: a FastAPI-based
 - [Architecture](#architecture)
 - [Features](#features)
 - [Authentication](#authentication)
+- [API Key Management](#api-key-management)
 - [Quick Start (Docker Compose)](#quick-start-docker-compose)
 - [Endpoints](#endpoints)
 - [Docker Configuration](#docker-configuration)
@@ -49,6 +50,8 @@ graph TD
     Locksmitha -->|JWT Token| Client
     Client -->|API Requests + JWT| API
     API -->|Validate Token| Locksmitha
+    Client -->|API Key Management| API
+    API -->|Proxy API Key Ops| Locksmitha
     API -->|Read/Write| KG
     API -->|Expose Tools| MCP
     MCP -->|Tool Execution| API
@@ -92,6 +95,8 @@ At present, the API does **not** provide advanced graph analytics such as centra
 
 All API endpoints (except `/health`) require authentication using a JSON Web Token (JWT) issued by the Locksmitha login service. You must obtain a valid JWT before making requests to the API or using MCP tools.
 
+Alternatively, you may use an API key (created via the API key management endpoints) for authentication. API keys are validated locally by the Graph Reader API and are not available for use with MCP tools.
+
 **How to obtain a JWT:**
 1. Send a login request to Locksmitha (default: `http://localhost:8001/auth/jwt/login`) with your credentials.
 2. The response will include a JWT token.
@@ -104,6 +109,82 @@ All API endpoints (except `/health`) require authentication using a JSON Web Tok
 - For MCP tool requests (e.g., via MCP Inspector), set the `Authorization` header in the tool's authentication section.
 
 If you do not provide a valid JWT, all endpoints (except `/health`) will return a 401 Unauthorized error.
+
+## API Key Management
+
+The Graph Reader API provides REST endpoints to create, list, and delete API keys for your user account. These endpoints proxy requests to the Locksmitha authentication service and are **not** exposed via MCP tools.
+
+**Endpoints:**
+
+- `POST /apikeys/` — Create a new API key
+- `GET /apikeys/` — List your API keys
+- `DELETE /apikeys/{key_id}` — Delete an API key by ID
+
+**Authentication:**
+All API key management endpoints require a valid JWT in the `Authorization` header.
+
+**Example: Create API Key**
+
+Request:
+```http
+POST /apikeys/
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+
+{
+  "name": "my-key",
+  "expires_at": "2024-12-31T23:59:59Z"
+}
+```
+
+Response:
+```json
+{
+  "id": "abc123",
+  "name": "my-key",
+  "service_id": "graph_reader_api",
+  "status": "active",
+  "created_at": "2024-06-01T12:00:00Z",
+  "expires_at": "2024-12-31T23:59:59Z",
+  "last_used_at": null,
+  "plaintext_key": "sk_live_..."
+}
+```
+
+**Example: List API Keys**
+
+Request:
+```http
+GET /apikeys/
+Authorization: Bearer <your_jwt_token>
+```
+
+Response:
+```json
+[
+  {
+    "id": "abc123",
+    "name": "my-key",
+    "service_id": "graph_reader_api",
+    "status": "active",
+    "created_at": "2024-06-01T12:00:00Z",
+    "expires_at": "2024-12-31T23:59:59Z",
+    "last_used_at": null
+  }
+]
+```
+
+**Example: Delete API Key**
+
+Request:
+```http
+DELETE /apikeys/abc123
+Authorization: Bearer <your_jwt_token>
+```
+
+Response: (204 No Content)
+
+> **Note:** API keys are only valid for REST API requests. They cannot be used with MCP tools.
 
 ## Quick Start (Docker Compose)
 
@@ -156,6 +237,9 @@ Access the API at: http://localhost:8000
 - `GET /entity/users/me`[^users-me-note]
 - `GET /community/{community_id}/members`
 - `GET /search?key=name&value=Alice`
+- `POST /apikeys/` — Create a new API key (REST only)
+- `GET /apikeys/` — List your API keys (REST only)
+- `DELETE /apikeys/{key_id}` — Delete an API key by ID (REST only)
 
 [^users-me-note]: Returns the authenticated user's identity and claims as extracted from the JWT. This endpoint is intended to provide user context for graph-related operations. It does not provide user profile management, but only exposes the current user's identity as it relates to the graph domain.
 

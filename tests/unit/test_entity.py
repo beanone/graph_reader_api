@@ -49,11 +49,3 @@ def test_get_entity_community_not_found(client, auth_header):
     assert response.status_code == 404
     data = response.json()
     assert data["detail"] == "Community not found"
-
-
-def test_get_current_user_info(client, auth_header):
-    response = client.get("/entity/users/me", headers=auth_header)
-    assert response.status_code == 200
-    data = response.json()
-    assert data["id"] == "123e4567-e89b-12d3-a456-426614174000"
-    assert data["email"] == "test@example.com"

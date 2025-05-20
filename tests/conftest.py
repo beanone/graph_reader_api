@@ -6,11 +6,11 @@ from pathlib import Path
 from uuid import UUID
 
 import pytest
+from apikey.dependencies import get_current_user
 from fixture_generator import create_test_graph_fixture
 from keylin.keylin_utils import create_jwt_for_user
 
 from graph_reader_api.app import application
-from graph_reader_api.auth.dependencies import get_current_user
 
 # Add src directory to Python path
 src_path = str(Path(__file__).parent.parent / "src")
