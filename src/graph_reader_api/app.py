@@ -1,10 +1,11 @@
 from contextlib import asynccontextmanager
 
 from apikey.db import init_db
+from apikey.dependencies import get_current_user
 from apikey.router import api_key_router
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi_mcp import FastApiMCP
+from fastapi_mcp import AuthConfig, FastApiMCP
 from graph_reader.config import GraphReaderConfig
 from graph_reader.reader import GraphReader
 
@@ -70,14 +71,19 @@ def create_app(base_dir: str = "resources/kg") -> FastAPI:
     application.include_router(community.init_router(reader))
     application.include_router(search.init_router(reader))
 
+    # Configure MCP with authentication
     mcp = FastApiMCP(
         application,
         name="Graph Reader API",
         description="A FastAPI-based API for graph data retrieval and analysis.",
         describe_all_responses=True,
         describe_full_response_schema=True,
+        auth_config=AuthConfig(
+            dependencies=[Depends(get_current_user)],
+        ),
     )
     mcp.mount()
+
     # We do not want to mount the API key router to the MCP.
     application.include_router(api_key_router)
 

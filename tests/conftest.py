@@ -11,7 +11,7 @@ from apikey.dependencies import get_current_user
 from fixture_generator import create_test_graph_fixture
 from jose import jwt
 
-from graph_reader_api.app import application
+from graph_reader_api.app import create_app
 
 # Add src directory to Python path
 src_path = str(Path(__file__).parent.parent / "src")
@@ -68,7 +68,12 @@ async def override_get_current_user(token: str | None = None):
     }
 
 
-application.dependency_overrides[get_current_user] = override_get_current_user
+@pytest.fixture
+def client(setup_graph_fixture):
+    """Create a test client with the application."""
+    app = create_app(base_dir=str(setup_graph_fixture))
+    app.dependency_overrides[get_current_user] = override_get_current_user
+    return app
 
 
 @pytest.fixture

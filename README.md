@@ -116,9 +116,9 @@ The Graph Reader API provides REST endpoints to create, list, and delete API key
 
 **Endpoints:**
 
-- `POST /apikeys/` — Create a new API key
-- `GET /apikeys/` — List your API keys
-- `DELETE /apikeys/{key_id}` — Delete an API key by ID
+- `POST /api-keys/` — Create a new API key
+- `GET /api-keys/` — List your API keys
+- `DELETE /api-keys/{key_id}` — Delete an API key by ID
 
 **Authentication:**
 All API key management endpoints require a valid JWT in the `Authorization` header.
@@ -127,12 +127,13 @@ All API key management endpoints require a valid JWT in the `Authorization` head
 
 Request:
 ```http
-POST /apikeys/
+POST /api-keys/
 Authorization: Bearer <your_jwt_token>
 Content-Type: application/json
 
 {
   "name": "my-key",
+  "service_id": "graph-reader",
   "expires_at": "2024-12-31T23:59:59Z"
 }
 ```
@@ -142,7 +143,7 @@ Response:
 {
   "id": "abc123",
   "name": "my-key",
-  "service_id": "graph_reader_api",
+  "service_id": "graph-reader",
   "status": "active",
   "created_at": "2024-06-01T12:00:00Z",
   "expires_at": "2024-12-31T23:59:59Z",
@@ -155,7 +156,7 @@ Response:
 
 Request:
 ```http
-GET /apikeys/
+GET /api-keys/
 Authorization: Bearer <your_jwt_token>
 ```
 
@@ -165,7 +166,7 @@ Response:
   {
     "id": "abc123",
     "name": "my-key",
-    "service_id": "graph_reader_api",
+    "service_id": "graph-reader",
     "status": "active",
     "created_at": "2024-06-01T12:00:00Z",
     "expires_at": "2024-12-31T23:59:59Z",
@@ -178,7 +179,7 @@ Response:
 
 Request:
 ```http
-DELETE /apikeys/abc123
+DELETE /api-keys/abc123
 Authorization: Bearer <your_jwt_token>
 ```
 
@@ -237,9 +238,9 @@ Access the API at: http://localhost:8000
 - `GET /entity/users/me`[^users-me-note]
 - `GET /community/{community_id}/members`
 - `GET /search?key=name&value=Alice`
-- `POST /apikeys/` — Create a new API key (REST only)
-- `GET /apikeys/` — List your API keys (REST only)
-- `DELETE /apikeys/{key_id}` — Delete an API key by ID (REST only)
+- `POST /api-keys/` — Create a new API key (REST only)
+- `GET /api-keys/` — List your API keys (REST only)
+- `DELETE /api-keys/{key_id}` — Delete an API key by ID (REST only)
 
 [^users-me-note]: Returns the authenticated user's identity and claims as extracted from the JWT. This endpoint is intended to provide user context for graph-related operations. It does not provide user profile management, but only exposes the current user's identity as it relates to the graph domain.
 
@@ -279,6 +280,7 @@ A Postman collection is provided to help you test the API endpoints. **You must 
 
 3. The collection includes requests for all available endpoints:
    - Login
+   - API Key Management
    - Entity operations
    - Community operations
    - Search operations

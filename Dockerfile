@@ -30,5 +30,5 @@ ENV PYTHONPATH=/app \
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 
-# Run the application
-CMD ["uvicorn", "graph_reader_api.app:application", "--host", "0.0.0.0", "--port", "8000"]
+# Run the application with hot reload
+CMD ["uvicorn", "graph_reader_api.app:application", "--host", "0.0.0.0", "--port", "8000", "--reload"]
