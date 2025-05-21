@@ -7,3 +7,4 @@ ruff
 pytest-env
 python-jose[cryptography]
 respx
+sseclient-py
