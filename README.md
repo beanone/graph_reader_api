@@ -37,7 +37,7 @@ graph TD
     end
 
     subgraph "Authentication"
-        Locksmitha[Locksmitha - Login Service]
+        Login[Login Service]
     end
 
     subgraph "Graph Reader API"
@@ -46,12 +46,12 @@ graph TD
         MCP[MCP Server]
     end
 
-    Client -->|Login| Locksmitha
-    Locksmitha -->|JWT Token| Client
+    Client -->Login
+    Login -->|JWT Token| Client
     Client -->|API Requests + JWT| API
-    API -->|Validate Token| Locksmitha
+    API -->|Validate Token| Login
     Client -->|API Key Management| API
-    API -->|Proxy API Key Ops| Locksmitha
+    API -->|Proxy API Key Ops| Login
     API -->|Read/Write| KG
     API -->|Expose Tools| MCP
     MCP -->|Tool Execution| API
@@ -62,7 +62,7 @@ graph TD
 
     class API primary
     class MCP secondary
-    class Locksmitha secondary
+    class Login secondary
     class KG storage
 ```
 
@@ -93,12 +93,12 @@ At present, the API does **not** provide advanced graph analytics such as centra
 
 ## Authentication
 
-All API endpoints (except `/health`) require authentication using a JSON Web Token (JWT) issued by the Locksmitha login service. You must obtain a valid JWT before making requests to the API or using MCP tools.
+All API endpoints (except `/health`) require authentication using a JSON Web Token (JWT) issued by the login service. You must obtain a valid JWT before making requests to the API or using MCP tools.
 
 Alternatively, you may use an API key (created via the API key management endpoints) for authentication. API keys are validated locally by the Graph Reader API and are not available for use with MCP tools.
 
 **How to obtain a JWT:**
-1. Send a login request to Locksmitha (default: `http://localhost:8001/auth/jwt/login`) with your credentials.
+1. Send a login request (default: `http://localhost:8001/auth/jwt/login`) with your credentials.
 2. The response will include a JWT token.
 
 **How to use the JWT:**
@@ -112,13 +112,13 @@ If you do not provide a valid JWT, all endpoints (except `/health`) will return 
 
 ## API Key Management
 
-The Graph Reader API provides REST endpoints to create, list, and delete API keys for your user account. These endpoints proxy requests to the Locksmitha authentication service and are **not** exposed via MCP tools.
+The Graph Reader API provides REST endpoints to create, list, and delete API keys for your user account. These endpoints proxy requests to the login service and are **not** exposed via MCP tools.
 
 **Endpoints:**
 
-- `POST /apikeys/` — Create a new API key
-- `GET /apikeys/` — List your API keys
-- `DELETE /apikeys/{key_id}` — Delete an API key by ID
+- `POST /api-keys/` — Create a new API key
+- `GET /api-keys/` — List your API keys
+- `DELETE /api-keys/{key_id}` — Delete an API key by ID
 
 **Authentication:**
 All API key management endpoints require a valid JWT in the `Authorization` header.
@@ -127,12 +127,13 @@ All API key management endpoints require a valid JWT in the `Authorization` head
 
 Request:
 ```http
-POST /apikeys/
+POST /api-keys/
 Authorization: Bearer <your_jwt_token>
 Content-Type: application/json
 
 {
   "name": "my-key",
+  "service_id": "graph-reader",
   "expires_at": "2024-12-31T23:59:59Z"
 }
 ```
@@ -142,7 +143,7 @@ Response:
 {
   "id": "abc123",
   "name": "my-key",
-  "service_id": "graph_reader_api",
+  "service_id": "graph-reader",
   "status": "active",
   "created_at": "2024-06-01T12:00:00Z",
   "expires_at": "2024-12-31T23:59:59Z",
@@ -155,7 +156,7 @@ Response:
 
 Request:
 ```http
-GET /apikeys/
+GET /api-keys/
 Authorization: Bearer <your_jwt_token>
 ```
 
@@ -165,7 +166,7 @@ Response:
   {
     "id": "abc123",
     "name": "my-key",
-    "service_id": "graph_reader_api",
+    "service_id": "graph-reader",
     "status": "active",
     "created_at": "2024-06-01T12:00:00Z",
     "expires_at": "2024-12-31T23:59:59Z",
@@ -178,7 +179,7 @@ Response:
 
 Request:
 ```http
-DELETE /apikeys/abc123
+DELETE /api-keys/abc123
 Authorization: Bearer <your_jwt_token>
 ```
 
@@ -237,9 +238,9 @@ Access the API at: http://localhost:8000
 - `GET /entity/users/me`[^users-me-note]
 - `GET /community/{community_id}/members`
 - `GET /search?key=name&value=Alice`
-- `POST /apikeys/` — Create a new API key (REST only)
-- `GET /apikeys/` — List your API keys (REST only)
-- `DELETE /apikeys/{key_id}` — Delete an API key by ID (REST only)
+- `POST /api-keys/` — Create a new API key (REST only)
+- `GET /api-keys/` — List your API keys (REST only)
+- `DELETE /api-keys/{key_id}` — Delete an API key by ID (REST only)
 
 [^users-me-note]: Returns the authenticated user's identity and claims as extracted from the JWT. This endpoint is intended to provide user context for graph-related operations. It does not provide user profile management, but only exposes the current user's identity as it relates to the graph domain.
 
@@ -268,7 +269,7 @@ The service is configured with the following Docker features:
 
 ## Testing with Postman
 
-A Postman collection is provided to help you test the API endpoints. **You must log in to Locksmitha and obtain a JWT before making any requests (except `/health`).**
+A Postman collection is provided to help you test the API endpoints. **You must log in and obtain a JWT before making any requests (except `/health`).**
 
 1. Install [Postman](https://www.postman.com/downloads/)
 
@@ -279,24 +280,91 @@ A Postman collection is provided to help you test the API endpoints. **You must 
 
 3. The collection includes requests for all available endpoints:
    - Login
+   - API Key Management
    - Entity operations
    - Community operations
    - Search operations
    - Health check
 
-4. Obtain a JWT from Locksmitha:
-   - Send a POST request to `http://localhost:8001/auth/jwt/login` with your credentials.
-   - The `access_token` value will be automatically extracted from the response and setup into a global variable.
+## End-to-End Testing
 
-5. Make sure the API is running locally before testing:
+To test the service end-to-end using Python, follow these exact steps:
+
+1. Ensure all services are running:
    ```bash
    docker-compose up --build
    ```
 
-6. Use the collection to test endpoints:
-   - All requests are pre-configured to use `http://localhost:8000` as the base URL
-   - Example data is included in the requests
-   - Variables and test scripts are included to validate responses
+2. Install the required Python packages:
+   ```bash
+   pip install httpx jose
+   ```
+
+3. Run the test script:
+   ```bash
+   python scripts/test_mcp_auth.py
+   ```
+
+The script will:
+1. Connect to the login service at `http://localhost:8001` to obtain a JWT token
+2. Use the JWT token to create an API key via the API service at `http://localhost:8000`
+3. Test the `/entity/1` endpoint using both authentication methods:
+   - JWT token in the `Authorization: Bearer <token>` header
+   - API key in the `X-API-Key` header
+
+Expected output:
+```
+[HH:MM:SS.mmm] Starting authentication tests...
+[HH:MM:SS.mmm] API URL: http://localhost:8000
+[HH:MM:SS.mmm] Login URL: http://localhost:8001
+[HH:MM:SS.mmm] Timeout: 30.0 seconds
+
+[HH:MM:SS.mmm] Getting JWT token...
+[HH:MM:SS.mmm] Starting JWT token request...
+[HH:MM:SS.mmm] Connecting to login service at http://localhost:8001
+[HH:MM:SS.mmm] Sending login request...
+[HH:MM:SS.mmm] Login response received: 200
+[HH:MM:SS.mmm] JWT token obtained successfully
+
+[HH:MM:SS.mmm] Getting API key...
+[HH:MM:SS.mmm] Starting API key request...
+[HH:MM:SS.mmm] Expiration set to: YYYY-MM-DDTHH:MM:SS.mmmZ
+[HH:MM:SS.mmm] Connecting to API service at http://localhost:8000
+[HH:MM:SS.mmm] Sending API key creation request...
+[HH:MM:SS.mmm] API key response received: 201
+[HH:MM:SS.mmm] API key obtained successfully
+
+[HH:MM:SS.mmm] Testing entity endpoint with JWT...
+[HH:MM:SS.mmm] Connecting to API service at http://localhost:8000
+[HH:MM:SS.mmm] Sending entity request with JWT...
+[HH:MM:SS.mmm] Entity response received: 200
+JWT authentication successful!
+Entity data: {
+  "entity_id": 1,
+  "properties": {
+    "name": "Alice"
+  }
+}
+
+[HH:MM:SS.mmm] Testing entity endpoint with API key...
+[HH:MM:SS.mmm] Connecting to API service at http://localhost:8000
+[HH:MM:SS.mmm] Sending entity request with API key...
+[HH:MM:SS.mmm] Entity response received: 200
+API key authentication successful!
+Entity data: {
+  "entity_id": 1,
+  "properties": {
+    "name": "Alice"
+  }
+}
+```
+
+If you see any errors:
+1. Verify that both services are running (`docker-compose ps`)
+2. Check that the login service is accessible at `http://localhost:8001`
+3. Check that the API service is accessible at `http://localhost:8000`
+4. Ensure the test user credentials are correct (default: `testuser@example.com` / `testpassword123`)
+5. Check the service logs for any errors (`docker-compose logs`)
 
 ## Testing MCP Integration
 
